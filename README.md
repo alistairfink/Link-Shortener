@@ -36,10 +36,10 @@ func checkCollisions(toGenerate int) {
 
 ```
 
-Using this we can see the amount of collisions based on different lengths of shortened encoded strings. The results are in the table below. As can be seen the collisions for 7 characters are relatively low with only 16 collisions at 10000000 hashes while still being relatively low.
+Using this we can see the amount of collisions based on different lengths of shortened encoded strings. The results are in the table below. As can be seen the collisions for 6 characters are relatively low with collisions only starting to appear at 1000000 hashes while still being relatively short. This can be dealt with by adding or subtractng time then regerating the hash.
 
-||5 Chars||6 Chars|7 Chars|8 Chars|
-|Hashes Generated|Collisions|Collisions|Collisions|Collisions|
+|Hashes Generated|Collisions (5 Chars)|Collisions (6 Chars)|Collisions (7 Chars)|Collisions (8 Chars)|
+|---|---|---|---|---|
 |10|0|0|0|0|
 |100|0|0|0|0|
 |1000|0|0|0|0|
