@@ -1,37 +1,73 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/base64"
-	"time"
+	"fmt"
+	"github.com/alistairfink/Link-Shortener/Config"
+	"github.com/alistairfink/Link-Shortener/Data/DatabaseConnection"
+	"github.com/alistairfink/Link-Shortener/Domain/Middleware"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/render"
+	"github.com/go-pg/pg"
+	"log"
+	"net"
+	"net/http"
+	"os"
+	"strings"
 )
 
 func main() {
-	starting := 10
-	ending := 10000000
-	for starting <= ending {
-		checkCollisions(starting)
-		starting *= 10
+	// Read in Config
+	var config *Config.Config
+	if _, err := os.Stat("./Config.json"); err == nil {
+		config = Config.GetConfig(".", "Config")
+	} else {
+		config = Config.GetConfig("/go/src/github.com/alistairfink/Link-Shortener/.", "Config")
 	}
+
+	// Open DB
+	db := DatabaseConnection.Connect(config)
+	defer DatabaseConnection.Close(db)
+
+	// Router
+	localAddrs, _ := net.InterfaceAddrs()
+	ip, _ := localAddrs[1].(*net.IPNet)
+	println("=============================== Serving On ===============================")
+	fmt.Printf(" %-12s%-12s\n", "Local", "localhost:"+config.Port)
+	fmt.Printf(" %-12s%-12s\n", "Network", ip.IP.String()+":"+config.Port)
+	println("==========================================================================\n")
+	router := Routes(db, config)
+
+	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+		fmt.Printf(" %-10s%-10s\n", method, strings.Replace(route, "/*", "", -1))
+		return nil
+	}
+
+	if err := chi.Walk(router, walkFunc); err != nil {
+		log.Panicf("Logging err: %s\n", err.Error())
+	}
+
+	log.Fatal(http.ListenAndServe(":"+config.Port, router))
 }
 
-func checkCollisions(toGenerate int) {
-	println()
-	currTime := time.Now()
-	hashes := make(map[string]bool)
-	collisions := 0
-	for i := 0; i < toGenerate; i++ {
-		currTime = currTime.Add(time.Second)
-		hash := md5.New()
-		hash.Write([]byte(currTime.String()))
-		hashedContent := base64.StdEncoding.EncodeToString(hash.Sum(nil))[0:8]
-		if hashes[hashedContent] {
-			collisions++
-		}
+func Routes(db *pg.DB, config *Config.Config) *chi.Mux {
+	// Init Router
+	router := chi.NewRouter()
+	router.Use(
+		render.SetContentType(render.ContentTypeJSON),
+		middleware.Logger,
+		middleware.DefaultCompress,
+		middleware.RedirectSlashes,
+		middleware.Recoverer,
+		Middleware.CorsMiddleware,
+	)
 
-		hashes[hashedContent] = true
-	}
+	// Init Controllers
 
-	println("Hashes Generated:", toGenerate)
-	println("Collisions:", collisions)
+	// Init Paths
+	router.Route("/", func(routes chi.Router) {
+
+	})
+
+	return router
 }
