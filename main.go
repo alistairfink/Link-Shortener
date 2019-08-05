@@ -64,7 +64,7 @@ func Routes(db *pg.DB, config *Config.Config) *chi.Mux {
 	)
 
 	// Init Controllers
-	linkController := Controllers.NewLinkController(db)
+	linkController := Controllers.NewLinkController(db, config)
 
 	// Init Paths
 	router.Route("/", func(routes chi.Router) {

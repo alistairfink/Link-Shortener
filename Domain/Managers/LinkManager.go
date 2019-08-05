@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"github.com/alistairfink/Link-Shortener/Config"
+	"github.com/alistairfink/Link-Shortener/Domain/ViewModels"
 	"github.com/go-pg/pg"
 	"time"
 )
@@ -26,8 +27,9 @@ func (this *LinkManager) GetLink(shortenedLink string) {
 
 }
 
-func (this *LinkManager) CreateLink(link string) {
-	println(this.generateLinkId(link))
+func (this *LinkManager) CreateLink(link *ViewModels.LinkRequestModel) {
+	println(link.Link)
+	println(this.Config.BaseLink + this.generateLinkId(link.Link))
 }
 
 func (this *LinkManager) generateLinkId(link string) string {
