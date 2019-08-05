@@ -29,7 +29,7 @@ func (this *LinkController) Routes() *chi.Mux {
 }
 
 func (this *LinkController) CreateLink(w http.ResponseWriter, r *http.Request) {
-	println("Create")
+	this.LinkManager.CreateLink("https://google.com")
 }
 
 func (this *LinkController) GetLink(w http.ResponseWriter, r *http.Request) {
