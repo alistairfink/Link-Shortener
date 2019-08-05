@@ -1,8 +1,8 @@
 {
-	"Port": "41695",
+	"Port": "41692",
 	"DB": {
 		"Address": "localhost",
-		"Port": "5435",
+		"Port": "5432",
 		"DBName": "postgres",
 		"Username": "postgres",
 		"Password": "docker"

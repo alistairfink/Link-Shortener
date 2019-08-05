@@ -39,11 +39,12 @@ func (this *LinkManager) GetLink(shortenedLink string) *DataModels.LinkDataModel
 
 func (this *LinkManager) GetAllLinks(filter int) *[]DataModels.LinkDataModel {
 	results := this.LinkCommand.GetAllLinks()
-	if filter > len(*results) {
-		filter = len(*results)
+	filter = len(*results) - filter
+	if filter < 0 {
+		filter = 0
 	}
 
-	filteredResults := (*results)[0:filter]
+	filteredResults := (*results)[filter:len(*results)]
 	return &filteredResults
 }
 
