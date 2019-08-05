@@ -1,18 +1,21 @@
 package Controllers
 
 import (
+	"github.com/alistairfink/Link-Shortener/Domain/Managers"
 	"github.com/go-chi/chi"
 	"github.com/go-pg/pg"
 	"net/http"
 )
 
 type LinkController struct {
-	DB *pg.DB
+	DB          *pg.DB
+	LinkManager *Managers.LinkManager
 }
 
 func NewLinkController(db *pg.DB) *LinkController {
 	controller := &LinkController{
-		DB: db,
+		DB:          db,
+		LinkManager: Managers.NewLinkManager(db),
 	}
 
 	return controller
