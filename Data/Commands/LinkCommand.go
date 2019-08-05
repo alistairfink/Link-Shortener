@@ -24,7 +24,7 @@ func (this *LinkCommand) GetLink(id string) *DataModels.LinkDataModel {
 }
 
 func (this *LinkCommand) GetAllLinks() *[]DataModels.LinkDataModel {
-	var models []DataModels.LinkDataModel
+	models := []DataModels.LinkDataModel{}
 	err := this.DB.Model(&models).Select()
 	if err != nil {
 		panic(err.Error())

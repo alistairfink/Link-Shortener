@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type LinkController struct {
@@ -32,7 +33,7 @@ func NewLinkController(db *pg.DB, config *Config.Config) *LinkController {
 func (this *LinkController) Routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Post("/", this.CreateLink)
-	router.Get("/", this.GetAllLink)
+	router.Get("/", this.GetAllLinks)
 	router.Get("/{link_id}", this.GetLink)
 	return router
 }
@@ -58,10 +59,16 @@ func (this *LinkController) CreateLink(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, result)
 }
 
-func (this *LinkController) GetAllLink(w http.ResponseWriter, r *http.Request) {
-	// filter := r.URL.Query().Get("top")
-	// filterInt, err := strconv.Atoi(filter)
+func (this *LinkController) GetAllLinks(w http.ResponseWriter, r *http.Request) {
+	filterInt := 100
+	filter := r.URL.Query().Get("top")
+	filterInt, err := strconv.Atoi(filter)
+	if err != nil {
+		filterInt = 100
+	}
 
+	result := this.LinkManager.GetAllLinks(filterInt)
+	render.JSON(w, r, result)
 }
 
 func (this *LinkController) GetLink(w http.ResponseWriter, r *http.Request) {
