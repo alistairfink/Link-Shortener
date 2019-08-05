@@ -5,9 +5,8 @@ import (
 )
 
 type Config struct {
-	Port     string
-	BaseLink string
-	DB       DB
+	Port string
+	DB   DB
 }
 
 type DB struct {

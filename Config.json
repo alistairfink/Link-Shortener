@@ -1,6 +1,5 @@
 {
 	"Port": "41692",
-	"BaseLink": "localhost:41692/link/",
 	"DB": {
 		"Address": "localhost",
 		"Port": "5435",

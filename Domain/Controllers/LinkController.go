@@ -6,6 +6,7 @@ import (
 	"github.com/alistairfink/Link-Shortener/Domain/Managers"
 	"github.com/alistairfink/Link-Shortener/Domain/ViewModels"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	"github.com/go-pg/pg"
 	"io/ioutil"
 	"log"
@@ -31,7 +32,8 @@ func NewLinkController(db *pg.DB, config *Config.Config) *LinkController {
 func (this *LinkController) Routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Post("/", this.CreateLink)
-	router.Get("/", this.GetLink)
+	router.Get("/", this.GetAllLink)
+	router.Get("/{link_id}", this.GetLink)
 	return router
 }
 
@@ -52,9 +54,23 @@ func (this *LinkController) CreateLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	this.LinkManager.CreateLink(&request)
+	result := this.LinkManager.CreateLink(&request)
+	render.JSON(w, r, result)
+}
+
+func (this *LinkController) GetAllLink(w http.ResponseWriter, r *http.Request) {
+	// filter := r.URL.Query().Get("top")
+	// filterInt, err := strconv.Atoi(filter)
+
 }
 
 func (this *LinkController) GetLink(w http.ResponseWriter, r *http.Request) {
-	println("Get")
+	id := chi.URLParam(r, "link_id")
+	result := this.LinkManager.GetLink(id)
+	if result == nil {
+		http.Error(w, "Invalid Request", http.StatusBadRequest)
+		return
+	}
+
+	render.JSON(w, r, result)
 }
