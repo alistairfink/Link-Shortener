@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/alistairfink/Link-Shortener/Config"
 	"github.com/alistairfink/Link-Shortener/Data/DatabaseConnection"
+	"github.com/alistairfink/Link-Shortener/Domain/Controllers"
 	"github.com/alistairfink/Link-Shortener/Domain/Middleware"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -63,10 +64,11 @@ func Routes(db *pg.DB, config *Config.Config) *chi.Mux {
 	)
 
 	// Init Controllers
+	linkController := Controllers.NewLinkController(db)
 
 	// Init Paths
 	router.Route("/", func(routes chi.Router) {
-
+		routes.Mount("/link", linkController.Routes())
 	})
 
 	return router
