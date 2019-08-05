@@ -8,6 +8,7 @@ import (
 	"github.com/alistairfink/Link-Shortener/Data/DataModels"
 	"github.com/alistairfink/Link-Shortener/Domain/ViewModels"
 	"github.com/go-pg/pg"
+	"strings"
 	"time"
 )
 
@@ -61,6 +62,9 @@ func (this *LinkManager) generateLinkId(link string) *DataModels.LinkDataModel {
 		hashedContent := hash.Sum(nil)
 		encodedHash := base64.StdEncoding.EncodeToString(hashedContent)
 		encodedSubstring := encodedHash[0:6]
+		encodedSubstring = strings.Replace(encodedSubstring, "/", "-", -1)
+		encodedSubstring = strings.Replace(encodedSubstring, "\\", "_", -1)
+
 		linkModel := &DataModels.LinkDataModel{
 			Id:   encodedSubstring,
 			Link: link,
