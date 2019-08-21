@@ -1,5 +1,6 @@
 # Link-Shortener
 Developer tool to shorten links.
+https://tools.alistairfink.com/link
 
 ## Link Shortening Methodology
 The idea that I came up with is to first take the current time and hash it to an MD5 hash. The idea behind this is to reduce the amount of collisions since each timestamp will be unique. This string is then encoded using Base64 to generate a more alphanumeric string. It is important to remember that the entire point of this project is to *shorten* the link. To do this I take the first X characters from the encoded string. This reduces the uniquness of the string and increases the chance of collisions. I wrote the following code to see the ideal number of characters to shorten the Base64 encoded string to to reduce collisions.
